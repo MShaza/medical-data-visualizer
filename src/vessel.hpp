@@ -4,6 +4,9 @@
 #include <godot_cpp/classes/mesh_instance3d.hpp>
 #include <godot_cpp/classes/cylinder_mesh.hpp>
 #include <godot_cpp/classes/standard_material3d.hpp>
+#include <godot_cpp/classes/static_body3d.hpp>
+#include <godot_cpp/classes/collision_shape3d.hpp>
+#include <godot_cpp/classes/cylinder_shape3d.hpp>
 #include <godot_cpp/core/class_db.hpp>
 
 namespace godot {
@@ -12,11 +15,14 @@ class Vessel : public MeshInstance3D {
     GDCLASS(Vessel, MeshInstance3D)
 
 private:
-    float diameter;      // vessel diameter in mm
-    float pressure;      // blood pressure value
-    int segment_id;      // which segment this is
+    float diameter;
+    float pressure;
+    int segment_id;
 
-    void update_visuals(); // redraws mesh based on data
+    StaticBody3D *collision_body;
+    CollisionShape3D *collision_shape;
+
+    void update_visuals();
 
 public:
     Vessel();
@@ -24,7 +30,6 @@ public:
 
     void _ready() override;
 
-    // Setters & Getters — callable from Godot editor
     void set_diameter(float d);
     float get_diameter() const;
 
@@ -38,5 +43,4 @@ public:
 };
 
 } // namespace godot
-
 #endif

@@ -8,16 +8,31 @@ Vessel::Vessel() {
     diameter = 5.0f;
     pressure = 80.0f;
     segment_id = 0;
+    collision_body = nullptr;
+    collision_shape = nullptr;
 }
 
 Vessel::~Vessel() {}
 
 void Vessel::_ready() {
+    // Create collision so raycasting works on click
+    collision_body = memnew(StaticBody3D);
+    collision_shape = memnew(CollisionShape3D);
+
+    Ref<CylinderShape3D> shape;
+    shape.instantiate();
+    shape->set_radius(diameter * 0.01f + 0.05f);
+    shape->set_height(0.35f);
+
+    collision_shape->set_shape(shape);
+    collision_body->add_child(collision_shape);
+    add_child(collision_body);
+
     update_visuals();
 }
 
 void Vessel::update_visuals() {
-    // Create a cylinder mesh sized by diameter
+    // Create cylinder mesh sized by diameter
     Ref<CylinderMesh> mesh;
     mesh.instantiate();
     mesh->set_top_radius(diameter * 0.01f);
@@ -25,16 +40,16 @@ void Vessel::update_visuals() {
     mesh->set_height(0.3f);
     set_mesh(mesh);
 
-    // Color by pressure: low=blue, normal=green, high=red
+    // Color by pressure
     Ref<StandardMaterial3D> mat;
     mat.instantiate();
 
     if (pressure < 60.0f) {
-        mat->set_albedo(Color(0.2f, 0.4f, 1.0f)); // blue
+        mat->set_albedo(Color(0.2f, 0.4f, 1.0f)); // blue = low
     } else if (pressure <= 100.0f) {
-        mat->set_albedo(Color(0.2f, 0.9f, 0.3f)); // green
+        mat->set_albedo(Color(0.2f, 0.9f, 0.3f)); // green = normal
     } else {
-        mat->set_albedo(Color(1.0f, 0.2f, 0.2f)); // red
+        mat->set_albedo(Color(1.0f, 0.2f, 0.2f)); // red = high
     }
 
     set_surface_override_material(0, mat);
