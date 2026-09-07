@@ -1,0 +1,14 @@
+# Compiled library
+demo/bin/
+
+# SCons build files
+.sconsign.dblite
+*.os
+*.o
+
+# Godot cache
+demo/.godot/
+
+# System files
+.DS_Store
+Thumbs.db
